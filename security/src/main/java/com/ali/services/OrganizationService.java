@@ -14,4 +14,5 @@ public interface OrganizationService {
     Optional<Organization> getOrganizationById(Integer id);
     void deleteOrganization(Integer id);
     Organization registerOrganization(String userEmail, OrganizationRegistrationRequest request);
+    Organization updateOrganization(Integer id, OrganizationRegistrationRequest request);
 }

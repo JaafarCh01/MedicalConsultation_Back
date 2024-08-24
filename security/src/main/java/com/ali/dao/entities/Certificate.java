@@ -20,9 +20,10 @@ public class Certificate {
     @Column(name = "certificate_file", columnDefinition = "LONGBLOB")
     private byte[] certificateFile; // File of the certificate
 
+
+
     @ManyToOne
     @JoinColumn(name = "doctor_id")
     @JsonBackReference
     private Doctor doctor; // The doctor associated with this certificate
 }
-

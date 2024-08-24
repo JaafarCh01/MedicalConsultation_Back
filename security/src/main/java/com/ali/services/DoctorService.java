@@ -18,4 +18,5 @@ public interface DoctorService {
     void deleteDoctorById(Integer id);
 
     Doctor registerDoctor(String userEmail, DoctorRegistrationRequest request) throws IOException;
+    Doctor updateDoctor(Integer id, DoctorRegistrationRequest request) throws IOException;
 }

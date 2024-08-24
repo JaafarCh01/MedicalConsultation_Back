@@ -33,11 +33,38 @@ public class Patient extends User {
     @JsonManagedReference
     private List<HistoryOperations> historyOperations;
 
+    private String medicalHistory;
+    private String gender;
+    private String phoneNumber;
+    @Setter
+    private String address;
+
     @Builder
     public Patient(Integer id, String firstName, String lastName, LocalDate dateOfBirth,
                    String email, String password, String city, List<Role> roles, boolean accountLocked,
-                   boolean enabled, LocalDate createdDate, LocalDate lastModifiedDate) {
+                   boolean enabled, LocalDate createdDate, LocalDate lastModifiedDate, String medicalHistory) {
         super(id, firstName, lastName, dateOfBirth, email, password, city, roles, accountLocked,
                 enabled, createdDate, lastModifiedDate);
+        this.medicalHistory = medicalHistory;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }

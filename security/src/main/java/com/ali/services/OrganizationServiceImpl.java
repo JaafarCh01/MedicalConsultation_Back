@@ -75,5 +75,22 @@ public class OrganizationServiceImpl implements OrganizationService {
         // Save the Organization entity
         return organizationRepository.save(organization);
     }
-}
 
+    @Override
+    public Organization updateOrganization(Integer id, OrganizationRegistrationRequest request) {
+        Organization existingOrganization = organizationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+
+        existingOrganization.setOrganizationName(request.getOrganizationName());
+        existingOrganization.setTypeOfInstitution(request.getTypeOfInstitution());
+        existingOrganization.setDescription(request.getDescription());
+        existingOrganization.setFacilityCity(request.getFacilityCity());
+        existingOrganization.setFacilityAddress(request.getFacilityAddress());
+        existingOrganization.setPhoneNumber(request.getPhoneNumber());
+        existingOrganization.setSchedule(request.getSchedule());
+        existingOrganization.setWebsite(request.getWebsite());
+        existingOrganization.setFacilityEmailAddress(request.getFacilityEmailAddress());
+
+        return organizationRepository.save(existingOrganization);
+    }
+}

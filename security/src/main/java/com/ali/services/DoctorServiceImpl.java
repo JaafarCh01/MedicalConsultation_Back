@@ -106,5 +106,31 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.save(doctor);
     }
 
+    @Override
+    public Doctor updateDoctor(Integer id, DoctorRegistrationRequest request) throws IOException {
+        Doctor existingDoctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
+        // Update doctor fields
+        existingDoctor.setSpeciality(request.getSpeciality());
+        existingDoctor.setEducation(request.getEducation());
+        existingDoctor.setWorkPlace(request.getWorkPlace());
+        existingDoctor.setPosition(request.getPosition());
+        existingDoctor.setWorkExperienceYears(request.getWorkExperienceYears());
+        existingDoctor.setAwards(request.getAwards());
+        existingDoctor.setContactPhone(request.getContactPhone());
+        existingDoctor.setContactEmail(request.getContactEmail());
+        existingDoctor.setAboutMe(request.getAboutMe());
+        existingDoctor.setSpecializationDetails(request.getSpecializationDetails());
+        existingDoctor.setWorkExperienceDetails(request.getWorkExperienceDetails());
+        existingDoctor.setFurtherTraining(request.getFurtherTraining());
+        existingDoctor.setAchievementsAndAwards(request.getAchievementsAndAwards());
+        existingDoctor.setScientificWorks(request.getScientificWorks());
+
+        if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+            existingDoctor.setProfileImage(request.getProfileImage().getBytes());
+        }
+
+        return doctorRepository.save(existingDoctor);
+    }
 }
