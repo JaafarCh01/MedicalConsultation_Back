@@ -3,6 +3,7 @@ package com.ali.security.auth;
 import com.ali.dao.entities.Doctor;
 import com.ali.dao.entities.Organization;
 import com.ali.dao.entities.Patient;
+import com.ali.dao.requests.OrganizationRegistrationRequest;
 import com.ali.security.email.EmailService;
 import com.ali.security.email.EmailTemplateName;
 import com.ali.security.handler.EmailAlreadyExistsException;
@@ -25,6 +26,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -55,8 +57,41 @@ public class AuthenticationService {
         registerUser(request, "PATIENT");
     }
 
-    public void registerOrganization(RegistrationRequest request) throws MessagingException {
-        registerUser(request, "ORGANIZATION");
+    public void registerOrganization(OrganizationRegistrationRequest request) throws MessagingException {
+        registerOrganizationUser(request);
+    }
+
+    private void registerOrganizationUser(OrganizationRegistrationRequest request) throws MessagingException {
+        var role = roleRepository.findByName("ORGANIZATION")
+                .orElseThrow(() -> new IllegalStateException("ROLE ORGANIZATION NOT FOUND"));
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
+
+        Organization organization = Organization.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .accountLocked(false)
+                .enabled(false)
+                .roles(List.of(role))
+                .dateOfBirth(request.getDateOfBirth())
+                .city(request.getCity())
+                .organizationName(request.getOrganizationName())
+                .typeOfInstitution(request.getTypeOfInstitution())
+                .description(request.getDescription())
+                .facilityCity(request.getFacilityCity())
+                .facilityAddress(request.getFacilityAddress())
+                .phoneNumber(request.getPhoneNumber())
+                .schedule(request.getSchedule())
+                .website(request.getWebsite())
+                .facilityEmailAddress(request.getFacilityEmailAddress())
+                .build();
+
+        userRepository.save(organization);
+        sendValidationEmail(organization);
     }
 
     private void registerUser(RegistrationRequest request, String roleName) throws MessagingException {

@@ -1,5 +1,6 @@
 package com.ali.security.auth;
 
+import com.ali.dao.requests.OrganizationRegistrationRequest;
 import com.ali.security.handler.BusinessErrorCodes;
 import com.ali.security.handler.UserNotEnabledException;
 import com.ali.security.security.JwtService;
@@ -48,7 +49,7 @@ public class AuthenticationController {
     @PostMapping("/register/organization")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> registerOrganization(
-            @RequestBody @Valid RegistrationRequest request
+            @RequestBody @Valid OrganizationRegistrationRequest request
     ) throws MessagingException {
         service.registerOrganization(request);
         return ResponseEntity.accepted().build();
