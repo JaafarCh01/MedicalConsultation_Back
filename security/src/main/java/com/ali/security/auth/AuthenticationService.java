@@ -27,7 +27,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -227,42 +226,19 @@ public class AuthenticationService {
 
     @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        try {
-            var user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-            var auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
-
-            var claims = new HashMap<String, Object>();
-            user = (User) auth.getPrincipal();
-            claims.put("fullName", user.getFullName());
-            var jwtToken = jwtService.generateToken(claims, user);
-
-            // Log the token
-            System.out.println("Generated JWT Token: " + jwtToken);
-
-            tokenRepository.deleteByUser(user);
-
-            // Save the JWT token in the repository
-            var token = Token.builder()
-                    .token(jwtToken)
-                    .createdAt(LocalDateTime.now())
-                    .expiresAt(null) // Adjust the expiry as needed
-                    .user(user)
-                    .build();
-
-            tokenRepository.save(token);
-
-            return AuthenticationResponse.builder().token(jwtToken).build();
-        } catch (BadCredentialsException e) {
-            // Throw a specific BadCredentialsException with a custom message
-            throw new BadCredentialsException("Invalid email or password");
-        }
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()
+            )
+        );
+        var user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+            .token(jwtToken)
+            .user(com.ali.security.user.UserDTO.fromUser(user))  // Add this line to include user information
+            .build();
     }
 
     public void enableUser(User user){
