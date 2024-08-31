@@ -2,6 +2,7 @@ package com.ali.services;
 
 
 
+import com.ali.dao.entities.Appointment;
 import com.ali.dao.entities.Doctor;
 import com.ali.dao.entities.Organization;
 import com.ali.dao.requests.DoctorRegistrationRequest;
@@ -19,4 +20,5 @@ public interface DoctorService {
 
     Doctor registerDoctor(String userEmail, DoctorRegistrationRequest request) throws IOException;
     Doctor updateDoctor(Integer id, DoctorRegistrationRequest request) throws IOException;
+    List<Appointment> getDoctorAppointments(Integer doctorId);
 }

@@ -9,11 +9,11 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
 @DiscriminatorValue("Doctor")
 public class Doctor extends User {
 
@@ -55,6 +55,18 @@ public class Doctor extends User {
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<HistoryOperations> historyOperations;
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Appointment> appointments;
+
+    @ManyToMany
+    @JoinTable(
+        name = "doctor_patient",
+        joinColumns = @JoinColumn(name = "doctor_id"),
+        inverseJoinColumns = @JoinColumn(name = "patient_id")
+    )
+    private List<Patient> patients;
 
     @Builder
     public Doctor(Integer id, String firstName, String lastName, LocalDate dateOfBirth,

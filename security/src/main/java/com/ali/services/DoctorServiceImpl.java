@@ -1,14 +1,18 @@
 package com.ali.services;
 
 
+import com.ali.dao.entities.Appointment;
 import com.ali.dao.entities.Certificate;
 import com.ali.dao.entities.Doctor;
+import com.ali.dao.repositories.AppointmentRepository;
 import com.ali.dao.repositories.DoctorRepository;
 import com.ali.dao.requests.DoctorRegistrationRequest;
 import com.ali.security.user.User;
 import com.ali.security.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,13 +25,21 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService {
+    @Autowired
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
+    private AppointmentRepository appointmentRepository;
+
 
     @Override
     public Doctor saveOrUpdateDoctor(Doctor doctor){
         return doctorRepository.save(doctor);
     }
+
+    @Override
+    public List<Appointment> getDoctorAppointments(Integer doctorId) {
+    return appointmentRepository.findByDoctorId(doctorId);
+}
 
     @Override
     public List<Doctor> getAllDoctors(){

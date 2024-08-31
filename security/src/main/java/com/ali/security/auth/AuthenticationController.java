@@ -102,4 +102,17 @@ public class AuthenticationController {
         authenticationService.passwordChanging(userEmail,request);
         return ResponseEntity.ok("Password Changed Successfully");
     }
+
+    @GetMapping("/user-info")
+public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
+    try {
+        String userEmail = jwtService.extractUsername(token.substring(7));
+        User user = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        return ResponseEntity.ok(user);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Error fetching user info: " + e.getMessage());
+    }
+}
 }

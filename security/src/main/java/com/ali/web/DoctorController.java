@@ -1,21 +1,23 @@
 package com.ali.web;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.ali.dao.requests.DoctorRegistrationRequest;
 import com.ali.security.security.JwtService;
 import com.ali.services.DoctorService;
-
+import com.ali.dao.entities.Appointment;
 import com.ali.dao.entities.Doctor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("doctor")
+@RequestMapping("/api/v1/doctor")
 @RequiredArgsConstructor
 public class DoctorController {
     private final DoctorService doctorService;
@@ -76,6 +78,16 @@ public class DoctorController {
             return ResponseEntity.ok(updatedDoctor);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating doctor: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<?> getDoctorAppointments(@PathVariable Integer id) {
+        try {
+            List<Appointment> appointments = doctorService.getDoctorAppointments(id);
+            return ResponseEntity.ok(appointments);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching appointments: " + e.getMessage());
         }
     }
 }
